@@ -1,0 +1,41 @@
+/* Questline v0.7.0 — original, content-specific vector concept figures. No external images. */
+(()=>{'use strict';
+const esc=x=>String(x??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+const base=(shapes,desc,w=700,h=270)=>`<figure class="qr-reading-diagram q7-figure"><svg class="q7-study-svg" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(desc)}"><rect width="${w}" height="${h}" rx="16" fill="#f3f8f7"/>${shapes}</svg><figcaption>${esc(desc)}</figcaption></figure>`;
+const rect=(x,y,w,h,text,fill='#dbeee8',fg='#275c53',rx=12,font=17)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="${fill}" stroke="#83afa4" stroke-width="1.5"/><text x="${x+w/2}" y="${y+h/2+font*.33}" text-anchor="middle" font-family="system-ui,'Apple SD Gothic Neo',sans-serif" font-size="${font}" fill="${fg}" font-weight="800">${esc(text)}</text>`;
+const line=(x1,y1,x2,y2,color='#538f83')=>`<path d="M${x1} ${y1}L${x2} ${y2}" stroke="${color}" stroke-width="3.5" stroke-linecap="round"/><path d="M${x2-12} ${y2-7}L${x2} ${y2}L${x2-12} ${y2+7}" stroke="${color}" stroke-width="3" fill="none" stroke-linejoin="round" transform="rotate(${Math.atan2(y2-y1,x2-x1)*180/Math.PI},${x2},${y2})" opacity="0"/>`;
+const arrow=(x1,y1,x2,y2,color='#538f83')=>{const a=Math.atan2(y2-y1,x2-x1),z=10;return `<path d="M${x1} ${y1}L${x2} ${y2}" stroke="${color}" stroke-width="3.4" fill="none" stroke-linecap="round"/><path d="M${x2-Math.cos(a-.48)*z} ${y2-Math.sin(a-.48)*z}L${x2} ${y2}L${x2-Math.cos(a+.48)*z} ${y2-Math.sin(a+.48)*z}" stroke="${color}" stroke-width="3.2" stroke-linecap="round" fill="none"/>`};
+const t=(x,y,label,sz=15,color='#516f6a',weight=600)=>`<text x="${x}" y="${y}" font-family="system-ui,'Apple SD Gothic Neo',sans-serif" font-size="${sz}" fill="${color}" font-weight="${weight}">${esc(label)}</text>`;
+const special={
+'os-cache':()=>base(`<g>${rect(35,70,135,92,'CPU','#d8e9f6','#234f75')}${rect(275,67,150,98,'L1 캐시','#d3f1e0','#295c51')}${rect(530,55,135,120,'메인 메모리','#f1e9d5','#795d39')}${arrow(173,112,270,112)}${arrow(426,112,524,112)}${t(54,47,'연산 요청',16)}${t(296,47,'작지만 빠름',15)}${t(545,47,'크지만 느림',15)}${t(268,213,'캐시에 있으면 메모리 접근을 줄인다',17,'#315a54',800)}</g>`, 'CPU와 메모리 사이의 캐시: 지역성(Locality)을 활용하는 이유'),
+'os-tlb':()=>base(`${rect(20,100,145,65,'가상주소 VPN','#d6e7f6','#234f75')}${rect(255,38,170,62,'TLB 변환 검색','#d5f1e4')}${rect(255,161,170,65,'페이지 테이블','#f8e6c8','#765a39')}${rect(540,98,140,70,'PPN + 오프셋','#d8ebdf')}${arrow(166,115,251,75)}${arrow(166,151,250,190)}${arrow(426,75,534,124)}${arrow(426,192,534,143)}${t(188,65,'적중',14)}${t(185,199,'미스',14)}${t(468,76,'주소 변환',14)}${t(488,209,'오프셋은 유지',13)}`, 'TLB 미스가 곧 페이지 폴트는 아니다. 페이지 테이블에서 변환을 찾을 수도 있다.'),
+'os-thread':()=>base(`${rect(210,16,275,64,'프로세스 공유: 코드 · 힙','#d5eee4')}${rect(62,145,225,82,'스레드 A · 개별 스택','#d8e8f6','#265478')}${rect(410,145,225,82,'스레드 B · 개별 스택','#e8dff5','#634f85')}${arrow(290,80,190,138)}${arrow(412,80,523,138)}${t(252,263,'공유 변수를 변경하면 동기화가 필요할 수 있다',15)}`,'같은 프로세스의 공유 주소 공간과 스레드별 실행 문맥'),
+'os-lock':()=>base(`${rect(270,17,160,54,'count = 0','#e6f2e9')}${rect(80,110,220,80,'A: 읽기 0 → 쓰기 1','#d8e8f6','#285b80')}${rect(405,110,220,80,'B: 읽기 0 → 쓰기 1','#eadff7','#654b83')}${arrow(305,75,200,105)}${arrow(388,75,517,105)}${rect(215,214,260,47,'결과 1 · 기대값 2','#fce8d3','#8e523c',12,15)}`,'두 스레드가 0을 읽고 각각 1을 쓰면 갱신 하나가 사라질 수 있다.'),
+'os-dma':()=>base(`${rect(18,100,130,68,'CPU','#d8e8f8','#2b5d7a')}${rect(215,101,160,68,'DMA 제어기','#dbeee5')}${rect(510,100,165,68,'메모리','#f9eacb','#775838')}${arrow(149,132,209,132)}${arrow(378,132,504,132)}${t(155,91,'전송 설정',13)}${t(405,90,'데이터 전송',13)}${arrow(574,192,120,193,'#9a7cae')}${t(235,215,'완료 알림 · CPU는 제어에 관여',14)}`, 'CPU가 전송을 설정하고 DMA가 장치 데이터를 메모리로 이동한다.'),
+'mp-flash':()=>{const tiles=[];for(let i=0;i<12;i++){const x=70+(i%6)*84,y=100+Math.floor(i/6)*67;tiles.push(`<rect x="${x}" y="${y}" width="72" height="55" rx="6" fill="${i<6?'#c2e4d7':'#d8e4f4'}" stroke="#7ba79a"/><text x="${x+36}" y="${y+33}" fill="#315c55" font-size="12" text-anchor="middle">P${i+1}</text>`)}return base(`${rect(70,25,492,53,'하나의 NAND 블록(Block)','#e3ede8')}${tiles.join('')}${t(114,253,'페이지(Page): 읽기 · 프로그램',16)}${t(410,253,'블록: 지우기(Erase)',16)}`, '페이지 여러 개가 하나의 블록을 이룬다. 프로그램과 지우기의 단위가 다르다.');},
+'mp-ftl':()=>base(`${rect(33,93,158,84,'논리 주소 LBA 5','#dce9f6','#235a7d')}${rect(268,75,168,113,'FTL 매핑 표','#f0e5fb','#65528b')}${rect(515,94,158,82,'물리 페이지 82','#dcebd9','#2b6e52')}${arrow(194,130,262,130)}${arrow(438,130,509,130)}${t(282,107,'LBA 5 → PPA 82',13)}${t(175,244,'새 위치에 기록하면 매핑 테이블도 갱신한다.',16)}`, '호스트가 사용하는 논리 주소와 SSD 내부의 물리 주소는 다를 수 있다.'),
+'ml-tree':()=>base(`${rect(243,15,220,58,'조건: x ≥ 기준?','#e4dff7','#654984')}${rect(78,140,225,76,'예 → 양성으로 예측','#d8eedf','#2c6652')}${rect(403,140,225,76,'아니오 → 음성','#f7e6d2','#875b3a')}${arrow(310,75,195,132)}${arrow(395,75,515,132)}${t(214,125,'참',13)}${t(460,125,'거짓',13)}`, '결정트리는 조건을 차례로 질문하며 데이터를 분류한다.'),
+'ml-metrics':()=>base(`${rect(147,34,225,55,'실제 양성','#e1f0e8')}${rect(382,34,225,55,'실제 음성','#f6e5dc')}${rect(20,102,112,64,'양성 예측','#e1f0e8')}${rect(20,174,112,64,'음성 예측','#f6e5dc')}${rect(147,103,225,64,'TP · 참양성','#b3e8d2','#225e46')}${rect(382,103,225,64,'FP · 거짓 양성','#f9d4ad','#7c503b')}${rect(147,174,225,64,'FN · 놓침','#f7d7ba','#79563b')}${rect(382,174,225,64,'TN · 참음성','#c5dee9','#315a71')}${t(144,258,'정밀도: TP / (TP+FP)',14)}${t(382,258,'재현율: TP / (TP+FN)',14)}`, '양성 예측의 정확성(정밀도)과 실제 양성 포착률(재현율)은 분모가 다르다.'),
+'ic-pipeline':()=>base(`${t(25,30,'분할 전 · 한 작업',16)}${rect(23,46,241,50,'조합 논리 A: 20','#f3dfc7','#74523c')}${rect(265,46,341,50,'조합 논리 B: 30','#e0e0f1','#55517e')}${t(27,115,'한 작업의 조합 경로: 20 + 30',14)}${t(25,158,'분할 후 · 레지스터 삽입',16)}${rect(23,174,241,54,'조합 논리 A: 20','#f3dfc7','#74523c')}${rect(272,170,66,62,'FF','#d5f1e0','#316a57')}${rect(345,174,261,54,'조합 논리 B: 30','#e0e0f1','#55517e')}${t(28,253,'클럭 주기는 가장 느린 단계와 FF 오버헤드로 결정',14)}`, '파이프라이닝은 단계별 작업을 겹쳐 처리하여 처리량을 높일 수 있다.'),
+'ic-timing':()=>base(`${rect(16,100,159,80,'발신 FF','#d7f0e3')}${rect(249,88,204,103,'조합 논리 지연','#f8e3ce','#815536')}${rect(528,100,159,80,'수신 FF','#d8e8f6','#2d5878')}${arrow(177,135,243,135)}${arrow(455,135,522,135)}${t(25,46,'Launch',15)}${t(548,46,'Capture',15)}${t(229,233,'Setup: 도착이 너무 늦으면 문제',15)}${t(229,252,'Hold: 도착이 너무 빨라도 문제',15)}`, 'FF 사이의 데이터 경로는 Setup과 Hold 조건을 모두 만족해야 한다.')
+};
+
+// Mobile versions are intentionally reflowed, not tiny 700px SVGs shrunk to a phone.
+const mobile={
+ 'os-cache':[['⚙️','CPU: 데이터 요청'],['⚡','L1 캐시: 먼저 확인'],['🧠','메모리: 캐시 미스 때 접근']],
+ 'os-tlb':[['🧭','VPN: 가상 페이지 번호'],['🎯','TLB 적중이면 변환 재사용'],['📑','미스면 페이지 테이블 조회'],['📍','PPN + 기존 오프셋']],
+ 'os-thread':[['🧠','프로세스가 힙·코드 공유'],['🧵','스레드 A: 별도 스택'],['🧵','스레드 B: 별도 스택']],
+ 'os-lock':[['🧵','A가 count=0 읽음'],['🧵','B도 count=0 읽음'],['⚠️','둘 다 1 기록 → 하나 유실']],
+ 'os-dma':[['💻','CPU: 전송 요청'],['🔌','DMA: 데이터를 이동'],['🧠','메모리: 데이터 도착'],['🔔','CPU: 완료 확인']],
+ 'mp-flash':[['🗂️','블록(Block)에는 여러 페이지'],['📄','읽기·프로그램: 페이지 단위'],['♻️','지우기: 블록 단위']],
+ 'mp-ftl':[['📦','논리 주소 LBA 5'],['🗺️','FTL 매핑표'],['💾','물리 페이지 P82']],
+ 'ml-tree':[['❓','기준에 따라 질문'],['✅','참: 한 쪽 분기'],['❌','거짓: 다른 쪽 분기']],
+ 'ml-metrics':[['🎯','TP: 올바른 양성'],['⚠️','FP: 잘못 예측한 양성'],['🔎','FN: 놓친 양성'],['📊','정밀도 = TP/(TP+FP)'],['📊','재현율 = TP/(TP+FN)']],
+ 'ic-pipeline':[['📏','분할 전: 20 + 30'],['💾','중간 레지스터(FF)'],['⏱️','분할 후: 20 | 30'],['🚀','정상 처리량 향상']],
+ 'ic-timing':[['💾','발신 플립플롭'],['⏱️','조합 회로 경로'],['💾','수신 플립플롭'],['⚠️','Setup과 Hold 모두 확인']]
+};
+const mobileHTML=n=>mobile[n.id]?`<div class="q7-mobile-diagram">${mobile[n.id].map(([ic,label],i)=>`<div class="q7-mobile-diagram-step"><span class="q7-mobile-diagram-icon">${ic}</span><strong>${esc(label)}</strong>${i<mobile[n.id].length-1?'<span class="q7-mobile-arrow">↓</span>':''}</div>`).join('')}</div>`:'';
+
+const render=n=>{if(!n)return '';if(special[n.id])return special[n.id]().replace('</svg>','</svg>'+mobileHTML(n));const steps=(n.visual||[]).slice(0,5);const caption=steps.join(' → ');return `<figure class="qr-reading-diagram q7-figure" aria-label="${esc(n.title)} 핵심 흐름"><div class="q7-figure-step">${steps.map((x,i)=>`<div class="q7-step"><b>${i+1}</b>${esc(x)}</div>`).join('')}</div><figcaption>${esc(n.en)} · ${esc(caption)}</figcaption></figure>`};
+window.QuestVisual={render,count:Object.keys(special).length};
+})();
