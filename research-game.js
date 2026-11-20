@@ -1,13 +1,13 @@
 /* Questline Research Academy v0.5.0: connected course atlas, guided lessons, transfer questions and spaced reviews. */
 (()=>{'use strict';
-  const C=window.QR_COURSES, N=window.QR_NODES;
+  const C=window.QR_COURSES, N=window.QR_NODES, MISSIONS=window.QR_MISSIONS||[];
   const lookup=Object.fromEntries(N.map(x=>[x.id,x]));
-  const ui={course:'os',selection:'os-cache',view:'atlas',phase:'lesson',review:false,reviewOnly:false,caseIndex:0,answered:null,input:'',selfText:'',revealed:false,hint:false,weak:false};
+  const ui={course:'os',selection:'os-cache',view:'atlas',phase:'lesson',review:false,reviewOnly:false,caseIndex:0,answered:null,input:'',selfText:'',revealed:false,hint:false,weak:false,missionId:null,missionRevealed:false,missionHint:false};
   let ctx=null;
   const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const state=()=>ctx?.getState();
   const today=()=>ctx?.dt()||new Date().toISOString().slice(0,10);
-  const ensure=()=>{const s=state();if(!s)return null;if(!s.researchV4||typeof s.researchV4!=='object'||Array.isArray(s.researchV4))s.researchV4={};const r=s.researchV4;for(const k of ['progress','reviewLog','responses','practiced'])if(!r[k]||typeof r[k]!=='object'||Array.isArray(r[k]))r[k]={};return r};
+  const ensure=()=>{const s=state();if(!s)return null;if(!s.researchV4||typeof s.researchV4!=='object'||Array.isArray(s.researchV4))s.researchV4={};const r=s.researchV4;for(const k of ['progress','reviewLog','responses','practiced','missions','missionReviewLog'])if(!r[k]||typeof r[k]!=='object'||Array.isArray(r[k]))r[k]={};return r};
   const learned=id=>!!ensure()?.progress[id]?.cleared;
   const accessible=n=>n.deps.every(learned);
   const count=s=>N.filter(n=>n.s===s&&learned(n.id)).length;
@@ -18,7 +18,7 @@
   const label=n=>n?`${n.icon} ${esc(n.title)}`:'';
   const moveTo=id=>{ui.selection=id;ui.course=lookup[id]?.s||ui.course;ui.view='focus';ui.phase='lesson';ui.review=learned(id);ui.answered=null;ui.revealed=false;ui.hint=false;ui.weak=false;ui.reviewOnly=false;ui.selfText='';ui.input='';ctx.render();window.scrollTo({top:0,behavior:'instant'});};
     const courseHead=c=>{const k=C[c],ns=covered(c),done=count(c);return `<header class="qr-map-heading"><p>${k.icon} ${esc(k.name)} · ${done}/${ns.length} 완료</p><h1>${esc(k.tagline)}</h1></header>`};
-    const atlas=()=>{const done=totalCount(),dueCount=dueNodes().length;return `<section class="page qr-page qr-atlas qr-v5"><header class="qr-atlas-intro"><span>RESEARCH ATLAS</span><h1>지식의 지도</h1><p>관심 있는 과목을 선택해 연구를 시작해.</p><div class="qr-progress-tally">연구 ${done}/${N.length} 완료 <span>·</span> 복습 ${dueCount}개</div></header><div class="qr-course-grid">${Object.entries(C).map(([id,k])=>{const ns=covered(id),d=count(id);return `<button class="qr-course-tile" type="button" data-qra="course" data-id="${id}"><span class="qr-course-tile-icon">${k.icon}</span><strong>${esc(k.name)}</strong><span>${d}/${ns.length} 연구 완료</span><div class="qr-course-tile-bar"><i style="width:${Math.round(d/ns.length*100)}%"></i></div><em aria-hidden="true">›</em></button>`}).join('')}</div><nav class="qr-primary-tools" aria-label="학습 복습"><button type="button" class="qr-solid-btn" data-qra="review-due" ${dueCount?'':'disabled'}>↻ 오늘 복습 ${dueCount?`(${dueCount})`:''}</button><button type="button" class="qr-line-btn" data-qra="review-random" ${done?'':'disabled'}>🎲 랜덤 복습</button></nav><details class="qr-legacy"><summary>이전 28문항</summary><button class="qr-line-btn" data-qra="legacy-random">이전 연구 다시 풀기</button></details></section>`};
+    const atlas=()=>{const done=totalCount(),dueCount=dueNodes().length;return `<section class="page qr-page qr-atlas qr-v5"><header class="qr-atlas-intro"><span>RESEARCH ATLAS</span><h1>지식의 지도</h1><p>관심 있는 과목을 선택해 연구를 시작해.</p><div class="qr-progress-tally">연구 ${done}/${N.length} 완료 <span>·</span> 복습 ${dueCount}개</div></header><div class="qr-course-grid">${Object.entries(C).map(([id,k])=>{const ns=covered(id),d=count(id);return `<button class="qr-course-tile" type="button" data-qra="course" data-id="${id}"><span class="qr-course-tile-icon">${k.icon}</span><strong>${esc(k.name)}</strong><span>${d}/${ns.length} 연구 완료</span><div class="qr-course-tile-bar"><i style="width:${Math.round(d/ns.length*100)}%"></i></div><em aria-hidden="true">›</em></button>`}).join('')}</div><nav class="qr-primary-tools" aria-label="학습 복습"><button type="button" class="qr-solid-btn" data-qra="review-due" ${dueCount?'':'disabled'}>↻ 오늘 복습 ${dueCount?`(${dueCount})`:''}</button><button type="button" class="qr-line-btn" data-qra="review-random" ${done?'':'disabled'}>🎲 랜덤 복습</button><button type="button" class="qr-line-btn q7-mission-entry" data-qra="missions">🧩 연결 문제집 <b>${MISSIONS.filter(m=>!!ensure().missions[m.id]?.cleared).length}/${MISSIONS.length}</b></button></nav><details class="qr-legacy"><summary>이전 28문항</summary><button class="qr-line-btn" data-qra="legacy-random">이전 연구 다시 풀기</button></details></section>`};
     const positions=s=>{const ns=covered(s);return Object.fromEntries(ns.map(n=>[n.id,{x:62+n.tier*266,y:28+n.lane*152}]))};
   const map=s=>{const ns=covered(s),pos=positions(s);let maxLane=Math.max(...ns.map(x=>x.lane),0);let height=166+maxLane*152;const maxTier=Math.max(...ns.map(x=>x.tier),0),width=Math.max(1150,62+maxTier*266+252);
     const connections=ns.flatMap(n=>n.deps.filter(d=>pos[d]).map(d=>{const from=pos[d],to=pos[n.id];const x1=from.x+202,y1=from.y+52,x2=to.x,y2=to.y+52;return `<path d="M${x1},${y1} C${x1+34},${y1} ${x2-34},${y2} ${x2},${y2}" class="qr-edge ${learned(d)?'active':''}"/>`})).join('');
@@ -26,12 +26,12 @@
   };
   const emphasis=text=>esc(text).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
   const facts=n=>`<div class="qr-reading-facts">${n.points.map(([title,desc])=>`<section><h3>${esc(title)}</h3><p>${esc(desc)}</p></section>`).join('')}</div>`;
-  const diagram=n=>`<figure class="qr-reading-diagram"><div class="qr-flow">${n.visual.map((text,i)=>`${i?'<span class="qr-flow-arr">→</span>':''}<span class="qr-flow-part">${esc(text)}</span>`).join('')}</div><figcaption>핵심 흐름</figcaption></figure>`;
+  const diagram=n=>window.QuestVisual?.render(n)||'';
   const lesson=n=>{const d=window.QR_DEEP?.[n.id];return `<article class="qr-reading">
     <div class="qr-lesson-open"><span class="qr-eyebrow">왜 이 개념이 필요할까?</span><p>${esc(n.why)}</p></div>
     <p class="qr-reading-lead">${esc(d?.lead||n.why)}</p>
-    <div class="qr-reading-facts">${(d?.parts||n.points).map(([title,desc],i)=>`<section><h3>${esc(title)}</h3><p>${esc(desc)}</p></section>`).join('')}</div>
     ${diagram(n)}
+    <div class="qr-reading-facts">${(d?.parts||n.points).map(([title,desc],i)=>`<section><h3>${esc(title)}</h3><p>${esc(desc)}</p></section>`).join('')}</div>
     <section class="qr-reading-example"><h2>상황에 적용해 보기</h2>${d?`<ol>${d.example.map(line=>`<li>${esc(line)}</li>`).join('')}</ol>`:`<p>${esc(n.worked)}</p>`}</section>
     ${d?.wrap?`<p class="qr-reading-takeaway">${emphasis(d.wrap)}</p>`:''}
     <details class="qr-reading-caveat"><summary>헷갈리기 쉬운 부분</summary><p>${esc(n.pitfall)}</p></details>
@@ -53,13 +53,36 @@
   const after=(quality)=>{const n=lookup[ui.selection],r=ensure();if(!n)return;const old=r.progress[n.id]||{};const first=!old.cleared;const weak=quality==='weak'||ui.weak;if(ui.selfText.trim())r.responses[n.id]={text:ui.selfText.trim().slice(0,1000),at:today()};const {date,streak}=spaced(old,weak);
     if(quality==='weak'&&!old.cleared){r.progress[n.id]={...old,last:today(),next:date,streak:0,attempts:(old.attempts||0)+1};ui.phase='lesson';ui.selfText='';ctx.log('study',`${n.title} 복습 필요`,'📚');const effortKey=`${today()}:${n.id}`;const newEffort=!r.practiced[effortKey];r.practiced[effortKey]=true;ctx.persist();if(newEffort)ctx.grant('도전 보상',`헷갈린 개념은 내일 다시 익히면 돼. 다음 복습 ${date}.`,{xp:5,gold:3},'📚');else{ctx.render();ctx.toast('연구 진행을 저장했어. 개념을 다시 익히고 이어가면 돼.')}return}
     r.progress[n.id]={...old,cleared:true,first:old.first||today(),last:today(),next:date,streak,attempts:(old.attempts||0)+1};
-    const rewards=first?{xp:30,gold:20,insight:2,sparks:1}:rewardReview();if(first)rewards.insight+=(window.QuestForge?.researchBonus?.()||0);if(first)rewards.insight+=(window.QuestForge?.researchBonus?.()||0);
+    const rewards=first?{xp:30,gold:20,insight:2,sparks:1}:rewardReview();if(first)rewards.insight+=(window.QuestForge?.researchBonus?.()||0);
     ui.phase='lesson';ui.view='course';ui.review=false;ui.reviewOnly=false;ui.revealed=false;ui.answered=null;ui.hint=false;ui.selfText='';ctx.log('study',`${n.title} ${first?'연구 완료':'복습'}`,'📖',weak?'추가 복습 예정':'이해 확인');ctx.persist();
     const unlocked=N.filter(x=>x.deps.includes(n.id)&&accessible(x)&&!learned(x.id)).map(x=>x.title);
     const txt=first?`새 연구가 개방됐어${unlocked.length?`: ${unlocked.join(', ')}`:''}. 다음 복습 ${date}.`:`${weak?'어려운 부분은 내일 다시 확인해 보자. ':''}다음 복습 ${date}.`;
     if(Object.values(rewards).some(Boolean))ctx.grant(first?'연구 완료 · 새로운 지식 발견':'복습 완료',txt,rewards,first?'📜':'🔮');else{ctx.render();ctx.toast('복습 기록을 저장했어. 오늘은 보상 수령 한도에 도달했어.');}
   };
+  const missionAvailable=m=>m.links.every(learned);
+  const missionProgress=m=>ensure().missions[m.id]||{};
+  const missionList=()=>{const available=MISSIONS.filter(missionAvailable),locked=MISSIONS.filter(m=>!missionAvailable(m));return `<section class="page qr-page q7-missions-page"><div class="qr-quiet-nav"><button data-qra="atlas">← 전체 연구 지도</button><span>연결 문제 ${MISSIONS.filter(x=>missionProgress(x).cleared).length}/${MISSIONS.length}</span></div><header class="q7-mission-header"><span>CONCEPT CONNECTIONS</span><h1>연결 문제집</h1><p>배운 개념을 두 가지씩 조합해 새로운 문제를 해결해 봐.</p></header>
+ ${available.length?`<div class="q7-mission-groups">${Object.entries(C).map(([key,c])=>{const items=available.filter(m=>m.s===key);return items.length?`<div class="q7-mission-group q7-sub-${key}"><h2>${c.icon} ${esc(c.name)}</h2><div class="q7-mission-grid">${items.map(m=>{const complete=!!missionProgress(m).cleared,parts=m.links.map(id=>lookup[id]?.title||id);return `<button class="q7-mission-tile ${complete?'cleared':''}" type="button" data-qra="mission-open" data-id="${m.id}"><span>${complete?'✓ 완료 · 다시 풀기':'연결 연습'}</span><strong>${esc(m.name)}</strong><small>${esc(parts.join(' + '))}</small><b aria-hidden="true">›</b></button>`}).join('')}</div></div>`:''}).join('')}</div>`:`<div class="q7-mission-empty"><div class="q7-mission-empty-symbol">🧩</div><strong>첫 연결 문제를 열어 보자</strong><p>예: 캐시와 TLB 연구를 완료하면 두 개념을 함께 쓰는 문제가 열려.</p><button type="button" data-qra="mission-start">운영체제 첫 연구 시작 →</button></div>`}
+ ${locked.length?`<details class="q7-mission-locked-list"><summary>아직 잠긴 연결 문제 ${locked.length}개</summary><div class="q7-locked-rows">${locked.map(m=>`<div><span>🔒</span><strong>${esc(m.name)}</strong><small>${esc(m.links.filter(id=>!learned(id)).map(id=>lookup[id]?.title||id).join(' + '))} 연구 필요</small></div>`).join('')}</div></details>`:''}
+ </section>`;};
+  const missionFocus=()=>{const m=MISSIONS.find(m=>m.id===ui.missionId);if(!m)return missionList();const pr=missionProgress(m);const parts=m.links.map(id=>lookup[id]?.title||id);return `<section class="page qr-page qr-focus qr-v6 q7-mission-focus"><div class="qr-quiet-nav"><button data-qra="missions">← 연결 문제집</button><span>${pr.cleared?'이전에 해결한 문제':'문제 해결 연습'}</span></div><div class="qr-study-paper"><header class="qr-study-title"><span>${esc(C[m.s].name)} · 연결 문제</span><h1>${esc(m.name)}</h1><p>${esc(parts.join(' × '))}</p></header><article class="qr-practice q7-mission-practice"><span class="qr-practice-stage">실전 적용</span><h2>${esc(m.ask)}</h2>${ui.missionRevealed?`<div class="q7-mission-solution"><h3>풀이의 핵심 단계</h3><ol>${m.steps.map(x=>`<li>${esc(x)}</li>`).join('')}</ol><h3>모범답안</h3><p>${esc(m.model)}</p></div><p class="q7-reflect">답을 이해했는지 스스로 판단해. 헷갈렸다면 다시 풀어도 진행이 막히지 않아.</p><div class="qr-practice-actions"><button class="qr-line-btn" data-qra="mission-weak">아직 헷갈려</button><button class="qr-solid-btn" data-qra="mission-complete">이해했어 · 완료</button></div>`:`<div class="q7-mission-work"><label for="q7MissionInput">먼저 내 생각 정리하기 <small>(선택)</small></label><textarea class="qr-explain" id="q7MissionInput" placeholder="계산 과정·근거·의문을 적어봐. 머릿속으로 먼저 푼 뒤 바로 답을 봐도 돼.">${esc(pr.response||'')}</textarea></div><div class="qr-practice-hint">${ui.missionHint?`<p>${esc(m.hint)}</p>`:`<button type="button" data-qra="mission-hint">힌트 · ${state().gold>=3?'골드 3':'무료'}</button>`}</div><button class="qr-solid-btn" data-qra="mission-reveal">모범 풀이 비교하기</button>`}</article></div></section>`};
+  const openMission=id=>{const m=MISSIONS.find(m=>m.id===id);if(!m||!missionAvailable(m))return;ui.missionId=id;ui.missionRevealed=false;ui.missionHint=false;ui.view='mission';ctx.render();window.scrollTo({top:0,behavior:'instant'})};
+  const finishMission=weak=>{const m=MISSIONS.find(m=>m.id===ui.missionId);if(!m)return;const r=ensure(),old=missionProgress(m),day=today();const first=!old.cleared;
+    r.missions[m.id]={...old,cleared:weak?!!old.cleared:true,attempts:(old.attempts||0)+1,weak:!!weak,last:day};
+    ui.view='missions';ui.missionRevealed=false;ui.missionHint=false;
+    const key=day+':'+m.id,previous=!!r.missionReviewLog[key];r.missionReviewLog[key]=true;const rewardedToday=Object.keys(r.missionReviewLog).filter(x=>x.startsWith(day+':')).length;
+    const reward=weak?(!previous?{xp:4,gold:2}:{}):first?{xp:24,gold:15,insight:2} :(!previous&&rewardedToday<=3?{xp:4,gold:4,insight:1}:{});
+    ctx.log('study',m.name+(weak?' · 복습 필요':' · 연결 문제 완료'),'🧩');ctx.persist();
+    if(Object.keys(reward).length)ctx.grant(weak?'다음에 다시 도전':'연결 문제 해결',weak?'헷갈린 개념은 다시 열어볼 수 있어.':'서로 다른 개념을 연결했어.',reward,'🧩');else{ctx.render();ctx.toast('풀이 기록을 저장했어.')}
+  };
   const actions={
+    missions:()=>{ui.view='missions';ui.phase='lesson';ctx.render();window.scrollTo({top:0,behavior:'instant'})},
+    'mission-start':()=>{ui.course='os';ui.selection=covered('os')[0]?.id;ui.view='course';ui.phase='lesson';ctx.render()},
+    'mission-open':el=>openMission(el.dataset.id),
+    'mission-reveal':()=>{const m=MISSIONS.find(m=>m.id===ui.missionId);if(m){const text=document.getElementById('q7MissionInput')?.value?.trim().slice(0,2000)||'';if(text)ensure().missions[m.id]={...missionProgress(m),response:text};ui.missionRevealed=true;ctx.persist();ctx.render()}},
+    'mission-hint':()=>{if(ui.missionHint)return;if(state().gold>=3){state().gold-=3;ctx.persist()}ui.missionHint=true;ctx.render()},
+    'mission-weak':()=>finishMission(true),
+    'mission-complete':()=>finishMission(false),
     atlas:()=>{ui.view='atlas';ui.phase='lesson';ctx.render()},
     'back-map':()=>{ui.view='course';ui.phase='lesson';ctx.render()},
     course:el=>{ui.course=el.dataset.id;ui.selection=covered(ui.course).find(n=>accessible(n)&&!learned(n.id))?.id||covered(ui.course)[0]?.id;ui.view='course';ui.phase='lesson';ui.review=false;ui.reviewOnly=false;ui.answered=null;ui.hint=false;ui.selfText='';ui.revealed=false;ui.weak=false;ctx.render()},
@@ -82,5 +105,5 @@
   };
   document.addEventListener('click',e=>{const b=e.target.closest('[data-qra]');if(!b||!ctx)return;const fn=actions[b.dataset.qra];if(!fn)return;e.preventDefault();fn(b)},true);
   document.addEventListener('submit',e=>{if(e.target?.id!=='qr-number-form'||!ctx)return;e.preventDefault();const n=lookup[ui.selection],v=Number(document.getElementById('qrNumeric')?.value);if(!n||!Number.isFinite(v)||String(document.getElementById('qrNumeric')?.value).trim()==='')return;ui.answered=Math.abs(v-n.probe.answer)<1e-8;if(!ui.answered)ui.weak=true;ctx.render()},true);
-  window.QuestResearch={mount(context){ctx=context;ensure()},page(){if(!ctx)return '<section class="page">연구 시스템 준비 중…</section>';ensure();return ui.view==='atlas'?atlas():ui.view==='focus'?focus():course()},learned:(id)=>learned(id),debug(){return {view:ui.view,node:ui.selection,phase:ui.phase,caseIndex:ui.caseIndex,count:totalCount(),due:dueNodes().length,all:N.length}}};
+  window.QuestResearch={mount(context){ctx=context;ensure()},page(){if(!ctx)return '<section class="page">연구 시스템 준비 중…</section>';ensure();return ui.view==='atlas'?atlas():ui.view==='focus'?focus():ui.view==='missions'?missionList():ui.view==='mission'?missionFocus():course()},learned:(id)=>learned(id),debug(){return {view:ui.view,node:ui.selection,phase:ui.phase,caseIndex:ui.caseIndex,count:totalCount(),due:dueNodes().length,all:N.length}}};
 })();
