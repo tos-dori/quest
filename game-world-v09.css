@@ -169,3 +169,70 @@ button:focus-visible,summary:focus-visible{outline:3px solid #e7a647!important;o
 @media(max-width:849px) and (max-height:690px){
  .content:has(.v9-home){padding-bottom:calc(73px + env(safe-area-inset-bottom))!important}
 }
+
+/* Questline v0.9.2 — one action, one compact game canvas. */
+.v92-onboard{display:flex;align-items:center;gap:10px;padding:7px 9px;margin:0 auto 7px;
+  min-height:44px;max-width:690px;border:1px solid #d6b77e;border-radius:11px;
+  background:linear-gradient(110deg,#f4e7c7,#e1d1a0);color:#293e40}
+.v92-onboard-icon{font-size:22px;line-height:1;flex:none}
+.v92-onboard-text{display:flex;flex-direction:column;min-width:0;flex:1;gap:1px}
+.v92-onboard-text small{font-size:10px;font-weight:750;color:#6a634f;line-height:1.1}
+.v92-onboard-text strong{font-size:15px;font-weight:900;line-height:1.2;white-space:normal}
+.v92-onboard-go{border:1px solid #2f6652;background:#2b795b;color:#fff9e6;padding:7px 11px;
+  min-height:34px;border-radius:9px;font-size:13px;font-weight:900;white-space:nowrap;flex:none}
+.v92-onboard-skip{border:none;background:transparent;color:#756e59;font-size:11px;
+  text-decoration:underline;padding:6px 2px;white-space:nowrap;flex:none}
+.v92-onboard-hint{font-size:11px;font-weight:700;color:#4b6c67;white-space:nowrap}
+.v92-onboard-go:focus-visible,.v92-onboard-skip:focus-visible{outline:3px solid #e7a647;outline-offset:2px}
+/* The resource chips are part of the HUD, not a wide separate website banner. */
+.topbar #resources{order:0!important;background:none!important;border:0!important;margin:0!important;
+  min-width:0!important;max-width:100%;height:auto;box-shadow:none;
+  justify-content:center;align-items:center;gap:5px!important}
+.topbar #resources[hidden]{display:none!important}
+.topbar #resources .res{width:auto!important;min-width:0!important;justify-content:center!important}
+@media(min-width:850px){
+ .app:has(.v9-intro){width:min(100%,850px)!important;max-width:850px!important;min-height:0!important}
+ .app:has(.v9-home-stage){width:min(100%,1100px)!important;max-width:1100px!important}
+ .topbar{height:53px!important;min-height:53px!important;display:flex;gap:9px}
+ .topbar .brand{flex:0 0 auto!important;text-align:left}
+ .topbar #resources{flex:1 1 auto;width:auto!important;padding:0 6px!important;min-height:0!important}
+ .topbar .top-actions{flex:0 0 auto}
+ .nav{height:47px!important;min-height:47px!important;width:min(100%,590px)!important;border-radius:0 0 12px 12px!important;
+   padding:2px 4px!important;margin:0 auto!important}
+ .nav button{min-height:39px!important;font-size:12px;display:flex;flex-direction:row;align-items:center;
+   justify-content:center;gap:6px;padding:4px!important}
+ .nav button b{font-size:18px!important;line-height:1}
+ .content:has(.v9-intro){padding:8px 10px 14px!important;flex:0 0 auto!important;min-height:0!important}
+ .content:has(.v9-home-stage){padding-bottom:18px!important;min-height:0!important}
+ .v9-intro{max-width:690px!important;margin:0 auto!important}
+ .v9-intro .mine-main{width:100%!important;max-width:690px!important;margin:0 auto!important}
+ .v9-intro .mine-visual{height:167px!important;max-height:167px!important}
+ .v9-intro .mine-dwarf{font-size:83px!important}
+ .v9-intro .mine-ore svg{height:104px!important;max-height:104px!important}
+ .v9-intro .mine-ore{min-height:120px!important}
+}
+@media(max-width:849px){
+ .topbar{height:auto!important;min-height:78px!important;display:grid;grid-template-columns:34px minmax(0,1fr) auto;
+  grid-template-rows:37px 32px;gap:1px 6px;padding:4px 8px!important}
+ .topbar .logo{grid-column:1;grid-row:1}
+ .topbar .brand{grid-column:2;grid-row:1;min-width:0;align-self:center}
+ .topbar .top-actions{grid-column:3;grid-row:1;justify-self:end}
+ .topbar #resources{grid-column:1/-1;grid-row:2;padding:0 2px!important;
+  min-height:30px!important;width:100%!important;justify-content:center}
+ .topbar #resources[hidden]{display:none!important}
+ .v92-onboard{gap:6px;min-height:40px;padding:5px 7px;margin-bottom:5px}
+ .v92-onboard-icon{font-size:19px}
+ .v92-onboard-text strong{font-size:13px}
+ .v92-onboard-text small{font-size:9px}
+ .v92-onboard-go{min-height:32px;padding:5px 8px;font-size:12px}
+ .v92-onboard-hint{display:none}
+ .v92-onboard-skip{font-size:10px;padding:4px 0}
+ .v9-intro .mine-main{width:100%!important;margin:0!important}
+ .v9-intro .mine-visual{height:clamp(145px,19vh,180px)!important;max-height:180px!important}
+}
+@media(max-width:360px){
+ .v92-onboard{gap:4px}
+ .v92-onboard-text strong{font-size:12px}
+ .v92-onboard-go{padding:5px 6px;font-size:11px}
+ .v92-onboard-skip{font-size:9px}
+}
