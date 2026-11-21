@@ -24,7 +24,15 @@ const home=({q,mine,village,progress,production,dispatch,dispatchDone,canClaim,s
 };
 const STEPS=[['⛏️','광석을 한 번 눌러 봐'],['🪨','광석 한 개를 채굴해 봐'],['⚒️','곡괭이를 한 단계 강화해'],['📜','현실에서 할 일을 하나 시작해'],['📚','첫 연구를 완료해']];
 const tutorial=({q,mine,progress,step})=>{
- const n=Math.min(4,Math.max(0,step)),isActive=q?.kind==='active';return `<section class="page v9-page v9-home v9-intro"><div class="v9-intro-guidance"><span class="v9-intro-icon">${STEPS[n][0]}</span><div><small>첫 모험 ${n+1}/5</small><strong>${STEPS[n][1]}</strong></div><button type="button" data-qprogress="skip" title="튜토리얼 건너뛰기" aria-label="튜토리얼 건너뛰기">건너뛰기</button></div>${n>=3?`<div class="v9-play-ribbon"><span class="v9-ribbon-mark">⚔️</span><span class="v9-ribbon-title">${esc(q.title)}</span><button class="v9-ribbon-go" data-act="${isActive?'resume':'open-quest'}" data-id="${esc(q.id)}">${isActive?'이어하기':'시작'} ›</button></div>`:''}${n>=4?`<button class="v9-learn-call" type="button" data-act="tab" data-tab="study">📚 첫 연구 시작 <b>›</b></button>`:''}${mine}</section>`;
+ const n=Math.min(4,Math.max(0,step)),active=q?.kind==='active';
+ const instruction=n===4?'첫 연구를 완료해':n===3?'현실의 할 일 하나 시작':STEPS[n][1];
+ const go=n===4?`<button class="v92-onboard-go" type="button" data-act="tab" data-tab="study">연구하기 ›</button>`:
+   n===3?`<button class="v92-onboard-go" type="button" data-act="${active?'resume':'open-quest'}" data-id="${esc(q?.id||'starter')}">${active?'이어하기':'퀘스트 시작'} ›</button>`:
+   `<span class="v92-onboard-hint" aria-hidden="true">↓ 채굴 화면</span>`;
+ return `<section class="page v9-page v9-home v9-intro"><div class="v92-onboard" aria-label="현재 튜토리얼 목표">
+ <span class="v92-onboard-icon" aria-hidden="true">${STEPS[n][0]}</span><span class="v92-onboard-text"><small>첫 모험 ${n+1}/5</small><strong>${esc(instruction)}</strong></span>
+ ${go}<button type="button" class="v92-onboard-skip" data-qprogress="skip" aria-label="튜토리얼 건너뛰기" title="튜토리얼 건너뛰기">건너뛰기</button>
+ </div>${mine}</section>`;
 };
 const questRow=({id,title,icon,source,done,progress})=>`<div class="v9-quest-row ${done?'done':''}"><span class="v9-quest-coin">${esc(icon||'📜')}</span><span class="v9-quest-name">${esc(title)}${source?`<small>${esc(source)}</small>`:''}</span>${done?`<span class="v9-done">✓ 완료</span>`:`<button type="button" class="v9-go" data-act="open-quest" data-id="${esc(id)}">${progress?'이어하기':'시작'}</button>`}</div>`;
 const quests=({todos,done,dt,progressOf})=>{
