@@ -51,3 +51,121 @@ button:focus-visible,summary:focus-visible{outline:3px solid #e7a647!important;o
 .v9-home .mine-upgrades{padding:0!important}
 @media(max-width:849px){.v9-home .mine-top{min-height:35px!important}.v9-home .mine-visual{height:clamp(183px,24vh,208px)!important;max-height:208px}.v9-home .mine-upgrades summary{min-height:34px!important}.v9-home .v9-play-ribbon{min-height:46px}.v9-home .q6-mine-stage{padding-bottom:3px!important}}
 @media(max-width:370px){.v9-home .mine-visual{height:180px!important}}
+/* Questline v0.9.1 — content-sized game panels, not viewport-filling cards.
+   Keep minimum usable hit areas; allow long lessons and expanded menus to scroll. */
+.v9-home-stage{width:100%;max-width:980px;margin-inline:auto;grid-template-columns:minmax(0,1.8fr) minmax(275px,.86fr);gap:10px}
+.v9-home .v9-play-ribbon{min-height:42px;padding:4px 9px;margin-bottom:6px;box-shadow:0 2px 0 #6c552d}
+.v9-home .v9-ribbon-mark{font-size:21px}
+.v9-home .v9-ribbon-go{min-height:34px;padding:5px 10px}
+.v9-home .mine-top{min-height:34px;padding:5px 9px}
+.v9-home .mine-top h2{font-size:16px}
+.v9-home .q6-vein-head{margin-bottom:1px;padding-top:2px;padding-bottom:0}
+.v9-home .mine-info{padding:3px 4px 0;min-height:20px}
+.v9-home .mine-health{margin-bottom:3px}
+.v9-home .q6-mine-rewards{padding:0 4px;font-size:11px}
+.v9-home .q6-mine-skills{min-height:33px;padding:3px 7px;margin:3px 6px!important}
+.v9-home .q6-mine-skills button{min-height:30px;padding:4px 9px}
+.v9-home .mine-upgrades{margin:3px 6px 6px!important}
+.v9-home .mine-upgrades summary{min-height:34px;padding:5px 8px!important}
+.v9-world-pane .v9-pane-top{min-height:29px;padding:3px 8px}
+.v9-world-pane .q7-village-board{padding:5px!important;gap:5px!important}
+.v9-world-pane .q7-facility.mini{min-height:73px!important;padding:3px!important}
+.v9-world-pane .q7-facility-art{height:37px!important;width:48px!important}
+.v9-world-pane .q7-facility-art svg{height:35px!important;width:49px!important}
+.v9-world-pane .q7-facility-details b{font-size:10px!important}
+.v9-world-pane .q7-facility-details>span{font-size:9px!important}
+.v9-home .v9-hero-status{min-height:39px;padding:4px 8px}
+.v9-hero-status b{font-size:12px}
+.v9-home .v9-claim-tray{gap:0}
+.v9-home .v9-collect{min-height:36px;padding:4px 8px;gap:6px}
+.v9-home .v9-collect>span{gap:3px}
+.v9-home .v9-money{font-size:11px}
+.v9-home .v9-collect strong{padding:5px 8px}
+.v9-shop .v9-page-head{min-height:39px;padding-bottom:6px}
+.v9-page-head{min-height:42px;padding-bottom:7px}
+.v9-shop-grid{gap:6px}
+.v9-shop-item{min-height:88px;gap:3px;padding:4px 2px}
+.v9-shop .v9-equipment{padding:7px}
+.v9-shop .v9-item-inspector{padding:9px}
+.v9-shop .v9-item-cost{padding:5px 0}
+.v9-quest-board{gap:7px}
+.v9-quest-row{min-height:53px;padding:6px 9px}
+@media(min-width:850px){
+ .content:has(.v9-home){padding-top:8px;padding-bottom:14px}
+ .v9-home .mine-visual{height:clamp(214px,26vh,244px)!important;max-height:244px}
+ .v9-home .mine-dwarf{font-size:78px}
+ .v9-home .mine-ore{min-height:140px}
+ .v9-home .mine-ore svg{height:110px;max-height:110px}
+ .v9-home .mine-pick{font-size:70px}
+ .v9-home .q6-mine-stage{padding-bottom:3px!important}
+ .v9-home .q6-mine-skills small{display:none}
+ .v9-home .q7-village-board{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+ .v9-side{gap:7px}
+ .v9-hero-status{min-height:39px}
+}
+@media(max-width:849px){
+ .content:has(.v9-home){padding-top:5px;padding-bottom:0!important}
+ .v9-home-stage{max-width:100%;gap:5px}
+ .v9-home .v9-play-ribbon{min-height:39px!important;margin-bottom:4px!important;padding:3px 6px!important;grid-template-columns:24px minmax(0,1fr) auto;gap:4px}
+ .v9-home .v9-ribbon-mark{font-size:18px}
+ .v9-home .v9-ribbon-title{font-size:13px}
+ .v9-home .v9-ribbon-go{min-height:32px;padding:4px 8px;font-size:12px}
+ .v9-home .mine-top{min-height:30px!important;padding:2px 7px!important}
+ .v9-home .mine-top h2{font-size:15px}
+ .v9-home .q6-vein-head{margin-bottom:1px!important;padding:0px 3px!important;min-height:14px;font-size:11px}
+ .v9-home .mine-visual{height:clamp(144px,19vh,163px)!important;max-height:163px}
+ .v9-home .mine-ore{min-height:121px;width:47%}
+ .v9-home .mine-ore svg{height:88px;max-height:88px}
+ .v9-home .mine-click-hint{font-size:11px!important;padding:3px 8px!important}
+ .v9-home .mine-dwarf{font-size:67px;transform:translateY(6px)}
+ .v9-home .mine-pick{font-size:60px}
+ .v9-home .q6-mine-stage{padding:0 6px 2px!important}
+ .v9-home .mine-info{min-height:17px;padding:1px 2px 0!important;font-size:11px}
+ .v9-home .mine-health{height:6px;margin-bottom:2px}
+ .v9-home .q6-mine-rewards{font-size:10px!important;min-height:12px}
+ .v9-home .q6-mine-skills{min-height:29px!important;padding:2px 6px!important;margin:2px 4px!important}
+ .v9-home .q6-mine-skills strong{font-size:11px}
+ .v9-home .q6-mine-skills button{min-height:26px;padding:3px 7px;font-size:11px}
+ .v9-home .mine-upgrades{margin:2px 4px 4px!important}
+ .v9-home .mine-upgrades summary{min-height:30px!important;padding:3px 7px!important;font-size:12px!important}
+ .v9-home .mine-upgrades summary span{font-size:10px}
+ .v9-side{gap:4px}
+ .v9-home .v9-collect{min-height:33px;padding:3px 6px;gap:4px}
+ .v9-home .v9-collect>b{font-size:11px;white-space:nowrap}
+ .v9-home .v9-collect>span{gap:2px}
+ .v9-home .v9-money{font-size:10px}
+ .v9-home .v9-collect strong{font-size:11px;padding:4px 5px}
+ .v9-world-pane .v9-pane-top{min-height:24px;padding:2px 7px;font-size:11px}
+ .v9-world-pane .v9-pane-top strong{font-size:12px}
+ .v9-world-pane .q7-village-board{gap:3px!important;padding:3px!important}
+ .v9-world-pane .q7-facility.mini{min-height:52px!important;padding:2px 1px!important;border-radius:8px!important}
+ .v9-world-pane .q7-facility-art{height:27px!important;width:34px!important}
+ .v9-world-pane .q7-facility-art svg{height:26px!important;width:35px!important}
+ .v9-world-pane .q7-facility-details b{font-size:9px!important}
+ .v9-shop-item{min-height:79px}
+ .v9-item-art{font-size:27px}
+ .v9-shop .v9-equipment{padding:5px}
+ .v9-shop .v9-item-inspector{padding:7px}
+ .v9-expedition-scene{min-height:262px}
+ .v9-expedition-nodes{padding:10px 9px;gap:6px}
+ .v9-region{min-height:61px}
+ .v9-region>span{font-size:21px}
+ .v9-region-sheet{padding:8px}
+ .v9-quest-row{min-height:49px;padding:5px 7px}
+}
+@media(max-width:370px){
+ .v9-home .mine-visual{height:141px!important}
+ .v9-home .mine-ore{min-height:111px}
+ .v9-home .mine-ore svg{height:82px;max-height:82px}
+ .v9-home .mine-dwarf{font-size:62px}
+ .v9-home .v9-claim-tray .v9-collect>b{font-size:10px}
+ .v9-home .v9-claim-tray .v9-money{font-size:9px}
+}
+/* Keep the final control reachable behind the fixed dock when a menu opens
+   or when the phone is shorter than the game scene. */
+@media(max-width:849px){
+ .content:has(.v9-home .mine-upgrades[open]){padding-bottom:calc(73px + env(safe-area-inset-bottom))!important}
+}
+@media(max-width:849px) and (max-height:690px){
+ .content:has(.v9-home){padding-bottom:calc(73px + env(safe-area-inset-bottom))!important}
+}
