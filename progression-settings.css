@@ -1,0 +1,79 @@
+/* Questline 0.8: first session visual hierarchy and settings. */
+#nav[hidden], #resources[hidden]{display:none!important}
+#cloudStatus{display:none}
+html.q8-cloud-connected #cloudStatus{display:inline-grid}
+html[data-quest-step="0"] #headerRecord,html[data-quest-step="1"] #headerRecord,html[data-quest-step="2"] #headerRecord{display:none}
+html[data-quest-step="0"] .mine-upgrades,html[data-quest-step="1"] .mine-upgrades{display:none!important}
+.q8-first-home{max-width:960px;margin:0 auto;padding-top:14px!important}
+.q8-first-home .mine-main{margin:0 auto;max-width:950px}
+.q8-first-home .q6-quest-strip,.q8-first-home .q8-study-entry{margin:12px 0}
+.q8-tutorial{border:1px solid #f2c26d;background:linear-gradient(125deg,#4f3b24,#352d38 60%,#243c4b);border-radius:16px;box-shadow:0 7px 20px #050b213d;padding:12px 15px 10px;margin-bottom:15px;color:#fff2d0}
+.q8-chapter{display:flex;justify-content:space-between;align-items:center;color:#f4ce8b;font-size:12px;font-weight:850;letter-spacing:.03em}
+.q8-chapter strong{background:#ffdea7;color:#473118;border-radius:20px;padding:3px 9px}
+.q8-tutbody{display:flex;align-items:flex-start;gap:12px;margin:13px 0}
+.q8-tuticon{font-size:29px;width:50px;height:50px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(145deg,#7f6749,#c0984e);box-shadow:0 3px 0 #4e3421;border:1px solid #ebc879;flex-shrink:0}
+.q8-chapter-name{font-size:12px;color:#efc47f;font-weight:800}
+.q8-tutbody h2{font-size:clamp(17px,4.5vw,22px);font-weight:900;color:#fff5d8;margin:2px 0 4px;line-height:1.35}
+.q8-tutbody p{color:#e4e1da;font-size:13px;line-height:1.5;margin:0}
+.q8-progress{height:6px;background:#1b283d;border-radius:10px;overflow:hidden}
+.q8-progress span{display:block;height:100%;border-radius:10px;background:linear-gradient(90deg,#e9a64f,#fae1a2);transition:width .2s}
+.q8-tutskip{display:block;margin:7px 0 0 auto;color:#cdbca7;border:0;background:transparent;text-decoration:underline;font-size:12px;cursor:pointer;padding:6px}
+.q8-next-unlock{display:flex;align-items:center;gap:8px;margin:0 0 10px;padding:9px 12px;background:#253650;border:1px solid #485d73;border-radius:12px;color:#d2e0f4}
+.q8-next-unlock span{font-size:11px;color:#a8b6ce;white-space:nowrap}.q8-next-unlock strong{font-size:13px}.q8-next-unlock small{font-size:11px;color:#b9cad4;margin-left:auto;text-align:right}
+.q8-study-entry{width:100%;display:flex;gap:12px;align-items:center;border:1px solid #89aace;background:linear-gradient(120deg,#2f5174,#264061);border-radius:14px;text-align:left;padding:15px;color:white;cursor:pointer;min-height:70px}
+.q8-study-entry>span:first-child{font-size:29px}.q8-study-entry div{flex:1}.q8-study-entry strong,.q8-study-entry small{display:block}.q8-study-entry small{font-size:12px;color:#cbdef4;margin-top:3px}.q8-study-entry>span:last-child{font-size:23px}
+.q8-settings{color:#433621;font-size:15px;line-height:1.45}
+.overlay:has(.q8-settings){align-items:center;padding:15px;z-index:55}
+.modal:has(.q8-settings){width:min(100%,610px);max-height:min(90dvh,830px);border-radius:22px;padding:14px 16px 18px;background:linear-gradient(180deg,#f5e5c7 0%,#ecdbb5 100%);border:3px solid #aa885b;box-shadow:0 7px 0 #674827,0 18px 70px #040916c4;color:#423521}
+.modal:has(.q8-settings) .modal-close{z-index:2;background:#795739;color:#fff2d6;border:2px solid #ba9a6c;top:10px;right:10px;box-shadow:0 3px 0 #573a20}
+.q8-settings-top{display:flex;align-items:center;gap:12px;padding:8px 44px 12px 5px;border-bottom:2px solid #d3b98b}
+.q8-setting-crown{font-size:26px;display:grid;place-items:center;width:46px;height:46px;border-radius:12px;background:linear-gradient(150deg,#edca7f,#d8a75b);border:2px solid #a67f40;box-shadow:0 3px 0 #a57a3f}
+.q8-settings-top small{font-size:10px;color:#887050;font-weight:850;letter-spacing:.07em}
+.q8-settings-top h2{font-size:23px;font-weight:950;line-height:1.1;margin:3px 0 0;color:#372b1a}
+.q8-setting-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;padding:8px 0;border-bottom:2px solid #d3b98b}
+.q8-setting-tabs button{padding:11px 3px;min-height:44px;color:#68513c;background:#dbc7a1;border:1px solid #ad9774;border-bottom:3px solid #b29b70;border-radius:10px;font-size:13px;font-weight:900;cursor:pointer}
+.q8-setting-tabs button.selected{background:linear-gradient(#fef0c9,#f5d57d);color:#503718;border-color:#c79438;border-bottom-color:#a8782f;box-shadow:inset 0 1px #fff5d2}
+.q8-settings-body{padding:7px 2px 5px;display:grid;gap:0}
+.q8-setting-row{display:grid;grid-template-columns:39px minmax(0,1fr) auto;align-items:center;gap:10px;min-height:70px;padding:10px 5px;border-bottom:1px solid #c9b58e}
+.q8-setting-emoji{font-size:25px;text-align:center}.q8-setting-row strong{display:block;font-size:14px;font-weight:900;color:#4c3720}
+.q8-setting-row small{display:block;color:#7c6650;margin-top:2px;line-height:1.4;font-size:12px}
+.q8-setting-btn{background:linear-gradient(#fff2d0,#e8c68b);color:#4a361e;border:1px solid #a78a5d;border-bottom:3px solid #a78a5d;border-radius:10px;min-height:39px;padding:7px 11px;font-size:13px;font-weight:900;cursor:pointer;white-space:nowrap}
+.q8-setting-btn:active,.q8-setting-tabs button:active{transform:translateY(2px);border-bottom-width:1px}
+.q8-setting-btn.main{background:linear-gradient(#96d68a,#5ea84d);color:#1b3e26;border-color:#4b8a45}
+.q8-setting-btn.danger{background:linear-gradient(#f8c8a7,#eb977f);border-color:#b76050;color:#6b2925}
+.q8-switch{min-width:61px;min-height:35px;border-radius:35px;background:#c6b398;color:#584a34;border:2px solid #a68e70;font-weight:950;cursor:pointer}
+.q8-switch.on{background:#72bd65;border-color:#558d45;color:#193c21}
+.q8-account-card{display:flex;align-items:center;gap:10px;padding:14px;margin:12px 0;background:#dce7d5;border:1px solid #a0b69e;border-radius:12px}
+.q8-account-symbol{font-size:24px}.q8-account-card>div{flex:1}.q8-account-card strong{font-size:14px;display:block}.q8-account-card small{display:block;color:#56725d;font-size:12px;margin-top:3px}
+.q8-hidden-input{display:none!important}
+.q8-danger-area{margin-top:12px;border:1px solid #d3a092;border-radius:12px;padding:10px 12px 0;background:#f8e2d5}
+.q8-danger-area h3{font-size:14px;margin:0;color:#8c3c30}.q8-danger-area>p{font-size:12px;margin:1px 0 5px;color:#996252}.q8-danger-area .q8-setting-row{border:0}
+.q8-dev-intro{padding:12px;margin:9px 0 12px;border:1px solid #b7b6a0;border-radius:11px;background:#e6e7d9}
+.q8-dev-intro strong{font-size:14px}.q8-dev-intro p,.q8-dev-foot{font-size:12px;color:#6f675b;margin:4px 0}
+.q8-input-label{font-weight:800;display:block;margin:9px 0 4px;font-size:13px}
+.q8-input{width:100%;min-height:44px;border:2px solid #b99b6f;border-radius:9px;padding:9px 10px;background:#fff8e9;color:#3b2e1d;font-size:16px}
+.q8-cheat-values{margin:12px 0}.q8-cheat-values>span{font-size:13px;color:#77624a}.q8-cheat-values>span strong{font-size:18px;color:#463a27}
+.q8-dev-shortcut{margin-top:13px;border-top:1px solid #cbb78a}
+.q8-review{padding:10px 2px}.q8-review>p{font-size:14px;line-height:1.6;color:#6d5235;margin:16px 4px}
+.q8-review>.q8-setting-btn{display:block;width:100%;margin:10px 0;padding:13px;font-size:14px}
+.q8-checkline{margin:14px 0;background:#f3d9b3;padding:10px;border-radius:8px;font-size:13px}
+.q8-checkline span{font-weight:900;color:#a96335;margin-right:5px}
+.q8-diff{padding:17px;background:#ffefd0;border:2px solid #d5b26e;border-radius:11px;text-align:center;margin-bottom:12px}
+.q8-diff strong{display:block;margin-bottom:8px}.q8-diff span{font-size:20px;font-weight:900}.q8-diff b{color:#ac803d;margin:0 6px}
+.q8-guide h2{font-size:18px}.q8-guide p{font-size:13px;color:#755c41;margin:10px 0}
+.q8-guide-row{display:flex;gap:12px;align-items:center;padding:9px 2px;border-bottom:1px solid #d0b98d}
+.q8-guide-row>span{display:grid;place-items:center;border-radius:30px;background:#efcf93;font-weight:900;color:#533920;width:28px;height:28px}
+.q8-guide-row strong,.q8-guide-row small{display:block}.q8-guide-row small{color:#7d6854;font-size:12px;margin-top:3px}
+html.q8-reduce-motion *,html.q8-reduce-motion *::before,html.q8-reduce-motion *::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+html.q8-large-text .content{font-size:1.1rem}html.q8-large-text .content p,html.q8-large-text .content small{font-size:max(13px,1em)}
+@media(min-width:800px){.q8-first-home .mine-main{max-width:920px}.q8-tutorial{max-width:920px;margin:0 auto 15px}.q8-settings-body{padding:11px 8px}.q8-setting-row{min-height:78px}}
+@media(max-width:380px){.q8-setting-tabs button{font-size:12px}.q8-setting-row{grid-template-columns:30px minmax(0,1fr) auto;gap:7px;padding:8px 0}.q8-setting-btn{font-size:12px;padding:6px 8px}.q8-next-unlock small{font-size:10px}.q8-tutbody h2{font-size:17px}}
+/* The touch target never moves: only the ore artwork gives hit feedback. */
+.mine-ore:active,.mine-ore.tapped{animation:none!important;transform:none!important}
+.mine-ore.tapped .mine-crystal{animation:q8-ore-hit .18s ease-out}
+@keyframes q8-ore-hit{50%{transform:scale(.91);filter:brightness(1.45)}}
+/* Storage status is discoverable in Settings; don't occupy play space until cloud is enabled. */
+#storageBanner{display:none!important}
+html.q8-cloud-connected #storageBanner{display:block!important}
+.q8-record-settings{display:flex;align-items:center;justify-content:space-between;width:100%;background:#2b4057;border:1px solid #567186;border-radius:12px;color:#e1ebf4;font-size:13px;font-weight:800;text-align:left;padding:13px;margin-top:15px;cursor:pointer}
+.q8-record-settings span{font-size:20px}
